@@ -9,6 +9,7 @@ public class Day3 {
 	
 	
 	
+	
 	public static void main(String[] args) {
 		
 			File file = new File("day3.txt");
@@ -30,6 +31,9 @@ public class Day3 {
 					//split all of the calls of the mul(X,Y) by ")"
 					String[] elements = line.split(")");
 					
+					
+					
+				
 					
 				}
 			
