@@ -10,85 +10,98 @@ public class Day3 {
 	
 	
 	public static int multiply(String mul) {
-		int res = 0;
-		
-		
-		res = Integer.parseInt(mul.substring(4, mul.indexOf(","))) * Integer.parseInt(mul.substring(mul.indexOf(","+1), mul.indexOf(")")));
-		return res;
+		 if (mul.startsWith("mul(") && mul.endsWith(")")) {
+			String[] parts = mul.substring(4, mul.length()-1).split(",");
+			
+			try {
+				int x = Integer.parseInt(parts[0]);
+				int y = Integer.parseInt(parts[1]);
+			
+			
+				return x * y;
+			} catch(NumberFormatException e) {
+				System.out.println("failed");
+			}
+		 }
+		 
+		 return 0;
 	}
 	
-	/*
-	 * Extract the next multiplication command from the given line
-	 * 
-	 * returns an empty string if none exist
-	 */
-	public static String extract(String line) {
-		
-		if(line.indexOf("mul(") == -1) {
-			return ""; // not valid command found in line
-		} else {
-			int start = line.indexOf("mul(");
-			int end = line.indexOf(")");
-			
-			//STOP! if there is no closing ")" then this is not the one we want :(
-			
-			
-			return line.substring(start, end);
-		}
-		
-	}
+	
 	
 	
 	public static void main(String[] args) {
 		
 			File file = new File("day3.txt");
-			int sum = 0;
-			
-			//make an ArrayList to hold all viable memories
-			ArrayList<Integer> nums = new ArrayList<Integer>(); 
+		
+
 				
 			//Use scanner class to read file
 			try {
 					
 					
 				Scanner scan = new Scanner(file);
-
+				int sum = 0;
+				boolean isDo = true;
 				
-				while(scan.hasNext())
+				while(scan.hasNextLine())
 				{	
 					
 					
-					String line = scan.next();
+					String line = scan.nextLine();
 					
-					String regex = "mul\\((\\d+),(\\d+\\)";
+					String regex = "mul\\((\\d{1,3}),\\s*(\\d{1,3}\\))";
+					String doRegex = "do\\(\\)";
+					String dontRegex = "don't\\(\\)";
 					
-					Pattern pattern = Pattern.compile(regex);
+					
+					
+			
+					
+					Pattern pattern = Pattern.compile((regex + "|" + doRegex + "|" + dontRegex));
 					Matcher matcher = pattern.matcher(line);
+				
 					
 					ArrayList<String> list = new ArrayList<String>(); 
 					
+				
+					
 					while(matcher.find()) {
-						list.add(matcher.group());					
+						
+						String matchText = matcher.group();					
+						
+						
+							
+							if(matchText.matches(regex) && isDo == true) {
+								
+								list.add(matchText);
+								
+							} else if(matchText.matches(doRegex)) {
+								isDo = true;
+							} else if(matchText.matches(dontRegex)) {
+								isDo = false;		
+							}
+						
 					}
 					
-					System.out.println("Valid 'mul' calls:");
+					
 					for(String call : list) {
+						
 						System.out.println(call);
+						sum += multiply(call);
+						
 					}
-					
-					
-					
 					
 				
+					
+					
+					System.out.println("TOTAL SUM " + sum);
+
+					
 					
 				}
 			
 				scan.close();
-				
-					
-				System.out.println("TOTAL SUM " + sum);
-					
-					//always close a scanner
 					
 				
 				} catch (FileNotFoundException e) {
